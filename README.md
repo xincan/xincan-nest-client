@@ -19,4 +19,4 @@ npm run build --report
 ```
 
 ## 表格封装展示
-![架构概览](src/assets/READMEFile/table-0.jpg "架构概览")  
+![架构概览](src/assets/READMEFile/dashboard.png "架构概览")  
