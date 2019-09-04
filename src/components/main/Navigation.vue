@@ -96,8 +96,8 @@
                   path: '/' + router.code,
                   name: router.code,
                   params: JSON.parse(router.params),
-                  // component: (resolve) => require.ensure([], () => resolve (require('@/' + router.path.substring(router.path.indexOf("/") + 1) + '.vue')))
-                  component: resolve => require(['@/' + router.path.substring(router.path.indexOf("/") + 1) + '.vue'], resolve)
+                  // component: (resolve) => require.ensure([], () => resolve (require('@/components' + router.path + '.vue')))
+                  component: resolve => require(['@/components' + router.path + '.vue'], resolve)
                 });
               }
             }
