@@ -24,7 +24,6 @@
         <!-- 设置一级菜单右侧选中‘缺口’图标 如果点击的是当前一级菜单并且有子节点，并且子节点个数为0则显示缺口 -->
         <span v-if="key === pKey && nav.children && nav.children.length === 0"><i :class="'fa fa-caret-left caret'" /></span>
 
-
         <!-- 判断是否有二级菜单，如果有则显示，反之则隐藏 -->
         <div
           :class="'child ' + (key === pKey ? ' is-show' : 'is-hide')"
@@ -115,28 +114,28 @@
       },
 
       /**
-       * 左侧一级菜单点击事件
+       * 左侧一级菜单点击事件，触发路由跳转
        * @Method controlBtn
        */
       clickParentBtn(menu, key){
         this.pKey = key;        // 点击一级菜单：改变当前点击菜单的下标
         this.cKey = 0;          // 默认展示第一个二级菜单
 
+        // 点击一级菜单，判断是否有子节点，如果有则显示默认子节点的第一个节点，进行路由跳转
         if(menu.children && menu.children.length > 0){
-          this.$router.push({name: menu.children[0].code, query: JSON.parse(menu.params)}); // 触发路由跳转
+          this.$router.push({name: menu.children[0].code, query: JSON.parse(menu.params)});
         }else {
-          this.$router.push({name: menu.children, query: menu.params ? menu.params : {} });         // 触发路由跳转
+          this.$router.push({name: menu.children, query: menu.params ? menu.params : {} });
         }
-
       }
 
       /**
-       * 左侧二级菜单点击事件
+       * 左侧二级菜单点击事件，触发路由跳转
        * @Method controlBtn
        */
       ,clickChildBtn(menu, index){
-        this.cKey = index;                                                    // 点击二级菜单：改变当前点击二级菜单的下标
-        this.$router.push({name: menu.code,query: JSON.parse(menu.params)});  // 触发路由跳转
+        this.cKey = index;
+        this.$router.push({name: menu.code,query: JSON.parse(menu.params)});
       }
 
     }
