@@ -6,27 +6,26 @@
 <template>
   <div id="navigation">
     <ul>
-      <!--
-          循环遍历一级菜单
-          判断点击选中、鼠标浮动样式
-      -->
+      <!-- 循环遍历一级菜单，判断点击选中、鼠标浮动样式 -->
       <li
         v-for="(nav,key) in menus"
         :class=" key === pKey ? 'active' : ''"
         @click="clickParentBtn(nav, key)"
       >
-        <!-- 设置一级菜单图标 -->
+        <!-- 设置一级菜单图标和名称 -->
         <span><i :class="'fa ' + nav.icon" />&nbsp;&nbsp;{{ nav.menuName }}</span>
 
         <!-- 设置一级菜单图标，判断如果菜单展开状态，箭头向上，反之向下 -->
         <span v-if="nav.children && nav.children.length > 0"><i :class="'fa ' + (key === pKey ? 'fa-angle-up' : 'fa-angle-down')" /></span>
 
-        <!-- 设置一级菜单右侧选中‘缺口’图标 点击则有，反之没有 -->
-        <span v-if="key === pKey && nav.children && nav.children.length == 0"><i :class="'fa fa-caret-left caret'" /></span>
+        <!-- 设置一级菜单右侧选中‘缺口’图标 如果点击的是当前一级菜单并且没有子节点则显示缺口 -->
+        <span v-if="key === pKey && nav.children === undefined"><i :class="'fa fa-caret-left caret'" /></span>
 
-        <!--
-             判断是否有二级菜单，如果有则显示，反之则隐藏
-        -->
+        <!-- 设置一级菜单右侧选中‘缺口’图标 如果点击的是当前一级菜单并且有子节点，并且子节点个数为0则显示缺口 -->
+        <span v-if="key === pKey && nav.children && nav.children.length === 0"><i :class="'fa fa-caret-left caret'" /></span>
+
+
+        <!-- 判断是否有二级菜单，如果有则显示，反之则隐藏 -->
         <div
           :class="'child ' + (key === pKey ? ' is-show' : 'is-hide')"
           v-if="nav.children && nav.children.length > 0"
@@ -91,16 +90,13 @@
           this.menus = response.data;
 
           this.menus.unshift({
-            id: 0
-            ,menuName: '主页'
-            ,icon: 'fa-home'
-            ,code: 'dashboard'
-            ,path: '/dashboard'
-            ,params: {}
+            id: 0,
+            menuName: '主页',
+            icon: 'fa-home',
+            code: 'dashboard',
+            path: '/dashboard',
+            params: {}
           });
-          console.log(this.menus)
-
-
           for(let menu of response.data) {
             if(menu.children && menu.children.length > 0) {
               for(let router of menu.children) {
@@ -114,7 +110,6 @@
               }
             }
           }
-          console.log(routers)
           this.$router.addRoutes(routers);
         }).catch( error => {console.log(error);});
       },
