@@ -87,7 +87,19 @@
 
         this.$get("/api/menu/list", {}).then( response => {
           let routers = [];
+
           this.menus = response.data;
+
+          this.menus.unshift({
+            id: 0
+            ,menuName: '主页'
+            ,icon: 'fa-home'
+            ,code: 'dashboard'
+            ,path: '/dashboard'
+            ,params: {}
+          });
+          console.log(this.menus)
+
 
           for(let menu of response.data) {
             if(menu.children && menu.children.length > 0) {
@@ -102,6 +114,7 @@
               }
             }
           }
+          console.log(routers)
           this.$router.addRoutes(routers);
         }).catch( error => {console.log(error);});
       },
@@ -117,7 +130,7 @@
         if(menu.children && menu.children.length > 0){
           this.$router.push({name: menu.children[0].code, query: JSON.parse(menu.params)}); // 触发路由跳转
         }else {
-          this.$router.push({name: menu.children, query: JSON.parse(menu.params)});         // 触发路由跳转
+          this.$router.push({name: menu.children, query: menu.params ? menu.params : {} });         // 触发路由跳转
         }
 
       }
