@@ -23,13 +23,14 @@ VueRouter.prototype.push = function push(location) {
 
 const routes = [
   {
-    path: '/dashboard',
-    name: 'dashboard',
+    path: '/Dashboard',
+    name: 'Dashboard',
+    params: {menu:'主页'},
     component: resolve => require(['@/components/views/dashboard/Dashboard.vue'], resolve)
   }
   ,{
     path: '/',
-    redirect: {name: 'dashboard',params:{name:'重定向'}}
+    redirect: {name: 'Dashboard',params:{menu:'主页'}}
   }
 ];
 

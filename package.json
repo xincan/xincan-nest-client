@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "^0.3.0",
     "axios": "^0.18.0",
     "echarts": "^4.2.1",
     "element-ui": "^2.5.0",

@@ -63,7 +63,14 @@
       return {
         pKey: 0           // 系统默认自动展开选中第一个一级菜单
         ,cKey: 0          // 系统默认自动选中第一个一级菜单下的第一个二级菜单
-        ,menus:[]
+        ,menus:[{
+          id: 0,
+          menuName: '主页',
+          icon: 'fa-home',
+          code: 'Dashboard',
+          path: '/Dashboard',
+          params: "{\"menu\":\"主页\"}"
+        }]
       }
     }
     ,created(){
@@ -84,31 +91,32 @@
       initMenuAndRouters(){
 
         this.$get("/api/menu/list", {}).then( response => {
+
           let routers = [];
+          this.menus = this.menus.concat(response.data);
 
-          this.menus = response.data;
-
-          this.menus.unshift({
-            id: 0,
-            menuName: '主页',
-            icon: 'fa-home',
-            code: 'dashboard',
-            path: '/dashboard',
-            params: {}
-          });
+          console.log(this.menus);
           for(let menu of response.data) {
+            routers.push({
+              path: '/' + menu.code,
+              name: menu.code,
+              params: menu.params,
+              component: resolve => require(['@/components' + menu.path + '.vue'], resolve)
+            });
+
             if(menu.children && menu.children.length > 0) {
               for(let router of menu.children) {
                 routers.push({
                   path: '/' + router.code,
                   name: router.code,
-                  params: JSON.parse(router.params),
-                  // component: (resolve) => require.ensure([], () => resolve (require('@/components' + router.path + '.vue')))
+                  params: router.params,
                   component: resolve => require(['@/components' + router.path + '.vue'], resolve)
                 });
               }
             }
+
           }
+          console.log(routers);
           this.$router.addRoutes(routers);
         }).catch( error => {console.log(error);});
       },
@@ -120,12 +128,11 @@
       clickParentBtn(menu, key){
         this.pKey = key;        // 点击一级菜单：改变当前点击菜单的下标
         this.cKey = 0;          // 默认展示第一个二级菜单
-
         // 点击一级菜单，判断是否有子节点，如果有则显示默认子节点的第一个节点，进行路由跳转
         if(menu.children && menu.children.length > 0){
-          this.$router.push({name: menu.children[0].code, query: JSON.parse(menu.params)});
+          this.$router.push({name: menu.children[0].code, params: JSON.parse(menu.params)});
         }else {
-          this.$router.push({name: menu.children, query: menu.params ? menu.params : {} });
+          this.$router.push({name: menu.code, params: JSON.parse(menu.params) });
         }
       }
 
@@ -135,7 +142,7 @@
        */
       ,clickChildBtn(menu, index){
         this.cKey = index;
-        this.$router.push({name: menu.code,query: JSON.parse(menu.params)});
+        this.$router.push({name: menu.code,params: JSON.parse(menu.params)});
       }
 
     }
