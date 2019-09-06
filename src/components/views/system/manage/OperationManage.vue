@@ -27,17 +27,14 @@
       -->
       <div slot="hatech-search" class="hatech-search">
         <el-form :inline="true" :model="table.search" class="demo-form-inline">
-          <el-form-item><el-input v-model="table.search.loginName" placeholder="请输入登录名称"></el-input></el-form-item>
-          <el-form-item><el-input v-model="table.search.name" placeholder="请输入用户名称"></el-input></el-form-item>
+          <el-form-item><el-input v-model="table.search.operationName" placeholder="请输入操作名称"></el-input></el-form-item>
           <el-form-item>
-            <el-select v-model="table.search.sex" placeholder="请选择性别">
-              <el-option label="请选择性别" value=""></el-option>
-              <el-option label="男" value="1"></el-option>
-              <el-option label="女" value="0"></el-option>
+            <el-select v-model="table.search.type" placeholder="请选择操作类型">
+              <el-option label="请选择操作类型" value=""></el-option>
+              <el-option label="视图操作" value="view"></el-option>
+              <el-option label="表格操作" value="table"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item><el-input v-model="table.search.areaId" placeholder="请出入用户所在地区"></el-input></el-form-item>
-          <el-form-item><el-input v-model="table.search.organizationId" placeholder="请输入用户所属机构"></el-input></el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="onTableSearch" icon="el-icon-search">查询</el-button>
             <el-button type="warning" size="small" @click="onTableReset" icon="el-icon-delete">清空</el-button>
@@ -67,42 +64,27 @@
           :model="form.data"
           :rules="form.rules"
         >
-          <el-form-item label="菜单名称" prop="menuName" :label-width="form.formLabelWidth" >
-            <el-input v-model="form.data.menuName" autocomplete="off" placeholder="请输入菜单名称" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
-          </el-form-item>
-          <el-form-item label="菜单级别" prop="level" :label-width="form.formLabelWidth">
-            <el-select v-model="form.data.level" clearable placeholder="请选择菜单级别" :style="{width: form.formInputWidth}">
-              <el-option label="一级菜单" :value="1"></el-option>
-              <el-option label="二级菜单" :value="2"></el-option>
-            </el-select>
+          <el-form-item label="按钮名称" prop="operationName" :label-width="form.formLabelWidth" >
+            <el-input v-model="form.data.operationName" autocomplete="off" placeholder="请输入按钮名称" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
           </el-form-item>
 
-
-          <el-form-item label="上级菜单" prop="parentId" :label-width="form.formLabelWidth" v-if="form.data.level === 1 ? false:true" :style="{lineHeight: '20px'}">
-            <treeselect
-              v-model="form.data.parentId"
-              :multiple="false"
-              :options="form.parentMenu.options"
-              :default-expand-level="1"
-              :style="{lineHeight:'20px',marginRight:'30px'}"
-              placeholder="请选择上级菜单"
-              @input="changeMenu"
-              @close="changeMenu"
-            />
+          <el-form-item label="按钮编码" prop="code" :label-width="form.formLabelWidth">
+            <el-input v-model="form.data.code" autocomplete="off" placeholder="请输入按钮图标（fa-home）" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
           </el-form-item>
 
-
-          <el-form-item label="菜单图标" prop="icon" :label-width="form.formLabelWidth">
-            <el-input v-model="form.data.icon" autocomplete="off" placeholder="请输入菜单图标（fa-home）" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
-          </el-form-item>
-          <el-form-item label="菜单路径" prop="path" :label-width="form.formLabelWidth">
-            <el-input v-model="form.data.path" autocomplete="off" placeholder="请输入菜单路径" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
-          </el-form-item>
-          <el-form-item label="菜单参数" prop="params" :label-width="form.formLabelWidth">
-            <el-input v-model="form.data.params" autocomplete="off" placeholder="请输入菜单参数" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
+          <el-form-item label="按钮图标" prop="icon" :label-width="form.formLabelWidth">
+            <el-input v-model="form.data.icon" autocomplete="off" placeholder="请输入按钮图标（fa-home）" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
           </el-form-item>
 
-          <el-form-item label="菜单排序" prop="sequence" :label-width="form.formLabelWidth">
+          <el-form-item label="按钮类型" prop="type" :label-width="form.formLabelWidth">
+<!--            <el-input v-model="form.data.type" autocomplete="off" placeholder="请选择按钮类型" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>-->
+            <el-radio-group v-model="form.data.type" size="small">
+              <el-radio label="view" border>视图按钮</el-radio>
+              <el-radio label="table" border>表格按钮</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="按钮排序" prop="sequence" :label-width="form.formLabelWidth">
             <el-input v-model="form.data.sequence" autocomplete="off" placeholder="请输入菜单序号" :disabled="form.disabled" :style="{width: form.formInputWidth}"></el-input>
           </el-form-item>
 
@@ -114,9 +96,6 @@
 
 <script>
 
-  import Treeselect from '@riophae/vue-treeselect';
-  import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-
   // 引用同创表格插件
   import HatechTable from '@/components/table/Hatech-Table';
 
@@ -124,7 +103,7 @@
   import HatechDialog from '@/components/dialog/Hatech-Dialog';
 
   export default {
-    components:{ Treeselect, HatechTable, HatechDialog }
+    components:{ HatechTable, HatechDialog }
     ,data() {
 
       /**
@@ -137,10 +116,10 @@
       return {
         // 表格信息设置
         table:{
-          title:'菜单信息'                         // 表格名称
-          ,id:'admin-menu-table'        // 表格ID，系统中表格唯一
+          title:'操作信息'                         // 表格名称
+          ,id:'admin-operation-table'        // 表格ID，系统中表格唯一
           ,autoInit: true                         // 自动加载：true,手动加载false
-          ,url:'/api/menu'                        // 数据访问路径
+          ,url:'/api/operation'                        // 数据访问路径
           ,tableWidth:'100%'                      // 表格宽度设定
           ,showCellUrl:'/api/table/find'          // 显隐列读取用户习惯
           ,dropCellUrl:'/api/table/save'          // 拖拽列保存入库路径，记录用户习惯
@@ -159,19 +138,16 @@
           ,search:{                                // 查询条件
           }
           ,column: [                               // 表格头部信息、列的显隐设置
-            {label:'菜单名称',   prop: 'menuName',   width:'auto', isHide: true}
-            ,{label:'菜单图标',  prop: 'icon',       width:'auto', isHide: true}
-            ,{label:'菜单路径',  prop: 'path',       width:'auto', isHide: true}
-            ,{label:'菜单参数',  prop: 'params',     width:'auto', isHide: true}
-            ,{label:'菜单级别',  prop: 'level',      width:'auto', isHide: true}
-            ,{label:'菜单排序',  prop: 'sequence',   width:'auto', isHide: true}
-            ,{label:'创建时间',  prop: 'createTime', width:'auto', isHide: true}
+             {label:'操作名称',  prop: 'operationName',   width:'auto', isHide: true}
+            ,{label:'操作编码',  prop: 'code',            width:'auto', isHide: true}
+            ,{label:'操作图标',  prop: 'icon',            width:'auto', isHide: true}
+            ,{label:'操作类型',  prop: 'type',            width:'auto', isHide: true}
+            ,{label:'操作排序',  prop: 'sequence',        width:'auto', isHide: true}
+            ,{label:'创建时间',  prop: 'createTime',      width:'auto', isHide: true}
           ]
           ,showHeaderOption: true                 // 是否显示头部右侧操作按钮
           ,headerOption:[                         // 表格头部操作按钮集合
-            {name:'增加',        icon:'el-icon-edit',       fun:'add',        isShow: true}
-            ,{name:'上传',        icon:'el-icon-upload2',    fun:'upload',     isShow: false}
-            ,{name:'下载',        icon:'el-icon-download',   fun:'download',   isShow: false}
+             {name:'增加',        icon:'el-icon-edit',       fun:'add',        isShow: true}
             ,{name:'批量删除',    icon:'el-icon-delete',      fun:'delete',    isShow: true}
           ]
           ,showTableOption: true                  // 是否显示列表右侧操作按钮
@@ -192,40 +168,30 @@
           ,formInputWidth: 'calc(100% - 30px)'    // 表单输入框等宽度
           ,disabled: false                        // 表单元素是否禁用
           ,rules:{                                // 表单各项元素校验
-            menuName: [
-              { required: true, message: '请输入菜单名称', trigger: 'blur' },
-              { min: 2, max: 8, message: '长度在2到8个字符', trigger: 'blur' }
+            operationName: [
+              { required: true, message: '请输入操作名称', trigger: 'blur' },
+              { min: 2, max: 25, message: '长度在2到50个字符', trigger: 'blur' }
             ]
-            ,parentId: [
-              { required: true, message: '请输请选择上级菜单', trigger: 'input' }
+            ,code: [
+              { required: true, message: '请输操作编码', trigger: 'blur' },
+              { min: 2, max: 10, message: '长度在2到10个字符', trigger: 'blur' }
             ]
             ,icon: [
-              { required: true, message: '请输入菜单图标（fa-home）', trigger: 'blur' }
-            ]
-            ,path: [
-              { required: true, message: '请输入菜单路径', trigger: 'blur' }
-            ]
-            ,level: [
-              { required: true, message: '请选择菜单级别', trigger: 'blur' }
+              { required: true, message: '请输操作图标（fa-home）', trigger: 'blur' }
             ]
             ,sequence: [
-              { required: true, message: '请输入菜单排序', trigger: 'blur' }
+              { required: true, message: '请输入操作排序', trigger: 'blur' }
             ]
-          },
-          parentMenu: {
-            options: []
           }
           ,data: {                                // 表单数据数据
-            menuName: ''
-            ,parentId: ''
+            operationName: ''
+            ,code: ''
             ,icon: ''
-            ,path: ''
-            ,params:''
-            ,level: 1
+            ,type:'view'
             ,sequence: ''
           }
           ,formOption:[                           // 表格右侧列操作按钮集合
-            {name:'提交',        fun:'formSubmit',  type:'success', size:'mini', isShow: true}
+             {name:'提交',        fun:'formSubmit',  type:'success', size:'mini', isShow: true}
             ,{name:'重置',        fun:'formReset',   type:'warning', size:'mini', isShow: true}
           ]
         }
@@ -233,24 +199,10 @@
     }
     ,mounted() {
 
-      this.initSelectTreeMenu();
     }
 
     ,methods: {
 
-      /**
-       * 初始化表单下拉菜单数据
-       * @Method add
-       */
-      initSelectTreeMenu(){
-        let then = this;
-        this.$get("/api/menu/tree", {}).then(response => {
-          this.form.parentMenu.options = response.data;
-          then.$message({message: response.msg ,center: true ,type: 'success'});
-        }).catch(function (error) {
-          then.$message({message: "数据操作失败" ,center: true ,type: 'success'});
-        });
-      }
 
 
       /**
@@ -258,7 +210,7 @@
        * 触发表单查询按钮，通过表单数据查询表格
        * @Method onTableSearch
        */
-      ,onTableSearch(){
+      onTableSearch(){
         console.log("父组件调用子组件函数");
         this.$refs.hatechTable._initTable();
       }
@@ -272,21 +224,14 @@
         this.table.search={};
       }
 
-      ,changeMenu(val){
-        let then = this;
-        this.$nextTick(()=>{
-          then.$refs[then.form.name].validateField('parentId');
-        });
-      }
-
       /**
        * 表格操作按钮集合
        * 对应headerOption数组对象中type值
        * @Method add
        */
       ,add(){
-        this.form.title='新增菜单信息';
-        this.form.data = { menuName: '', parentId: null, icon: '', path: '', params:'', level: 1, sequence: '' };
+        this.form.title='新增操作信息';
+        this.form.data = { operationName: '', code:'', icon: '', type:'view', sequence: '' };
         this.form.disabled = false;
         this.form.isBtnShow = true;
         this.form.dialogFormVisible=true;
@@ -298,7 +243,7 @@
        * @Method edit
        */
       ,edit(result) {
-        this.form.title='修改菜单信息';
+        this.form.title='修改操作信息';
         this.form.data = result.row;
         this.form.disabled = false;
         this.form.isBtnShow = true;
@@ -306,7 +251,7 @@
       }
 
       ,detail(result){
-        this.form.title='查看菜单信息';
+        this.form.title='查看操作信息';
         this.form.data = result.row;
         this.form.disabled = true;
         this.form.isBtnShow = false;
@@ -366,7 +311,7 @@
             if(result.id === undefined){
 
               // 调用父类函数传参
-              this.$put("/api/menu", result.row).then(response => {
+              this.$put("/api/operation", result.row).then(response => {
                 console.log(result);
                 that.$message({message: response.msg ,center: true ,type: 'success', customClass: 'aaa'});
                 that.$nextTick(()=>{ that.$refs.hatechTable._initTable(); });
@@ -375,7 +320,7 @@
               });
             } else {
               // 调用父类函数传参
-              this.$patch("/api/menu", result.row).then(response => {
+              this.$patch("/api/operation", result.row).then(response => {
                 console.log(result);
                 that.$message({message: response.msg ,center: true ,type: 'success'});
                 that.$nextTick(()=>{ that.$refs.hatechTable._initTable(); });

@@ -91,30 +91,29 @@
       initMenuAndRouters(){
 
         this.$get("/api/menu/list", {}).then( response => {
-
           let routers = [];
-          this.menus = this.menus.concat(response.data);
+          if(response.data && response.data.length > 0){
+            this.menus = this.menus.concat(response.data);
+            console.log(this.menus);
+            for(let menu of response.data) {
+              routers.push({
+                path: '/' + menu.code,
+                name: menu.code,
+                params: menu.params,
+                component: resolve => require(['@/components' + menu.path + '.vue'], resolve)
+              });
 
-          console.log(this.menus);
-          for(let menu of response.data) {
-            routers.push({
-              path: '/' + menu.code,
-              name: menu.code,
-              params: menu.params,
-              component: resolve => require(['@/components' + menu.path + '.vue'], resolve)
-            });
-
-            if(menu.children && menu.children.length > 0) {
-              for(let router of menu.children) {
-                routers.push({
-                  path: '/' + router.code,
-                  name: router.code,
-                  params: router.params,
-                  component: resolve => require(['@/components' + router.path + '.vue'], resolve)
-                });
+              if(menu.children && menu.children.length > 0) {
+                for(let router of menu.children) {
+                  routers.push({
+                    path: '/' + router.code,
+                    name: router.code,
+                    params: router.params,
+                    component: resolve => require(['@/components' + router.path + '.vue'], resolve)
+                  });
+                }
               }
             }
-
           }
           console.log(routers);
           this.$router.addRoutes(routers);
