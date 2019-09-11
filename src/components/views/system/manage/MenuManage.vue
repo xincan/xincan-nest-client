@@ -5,7 +5,7 @@
 
 <template>
 
-  <div class="hatech">
+  <div class="hatech-panel">
 
     <!--
         同创数据表格调用实列
