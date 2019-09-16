@@ -22,6 +22,8 @@
               <el-tree class="filter-tree"
                        :data="menu.data"
                        :props="defaultProps"
+                       node-key="id"
+                       :highlight-current="true"
                        default-expand-all
                        :filter-node-method="findNode"
                        ref="menuTree"
@@ -48,15 +50,35 @@
           </div>
           <div class="hatech-item-body" >
             <div :style="{height:'100%', overflow: 'auto', overflowX: 'hidden', textAlign: 'center'}">
-              <el-checkbox
-                border
-                :key="key"
-                :disabled="operation.disabled"
-                v-for="(operate, key) in operation.data"
-                :style="{margin: '10px'}"
-                :checked="operate.checked"
-                @change="changeOperation(operate)"
-              >{{operate.operationName}}</el-checkbox>
+              <p style="color: #000;font-weight: 600">页面操作按钮</p>
+              <div class="pageOperation">
+                <el-checkbox
+                  border
+                  :key="key"
+                  :disabled="operation.disabled"
+                  v-for="(operate, key) in operation.pageData"
+                  :style="{margin: '10px'}"
+                  v-model="operate.checked"
+                  @change="changeOperation(operate)"
+                >{{operate.operationName}}</el-checkbox>
+              </div>
+              <div class="tableOperation">
+                <p style="color: #000;font-weight: 600">表格操作按钮</p>
+                <el-checkbox
+                  border
+                  :key="key"
+                  :disabled="operation.disabled"
+                  v-for="(operate, key) in operation.tableData"
+                  :style="{margin: '10px'}"
+                  v-model="operate.checked"
+                  :checked="operate.checked"
+                  @change="changeOperation(operate)"
+                >{{operate.operationName}}</el-checkbox>
+              </div>
+              <div class="allOperation" style="margin-top: 50px">
+                <el-button type="primary" @click="saveOperation">确定</el-button>
+                <el-button>重置</el-button>
+              </div>
             </div>
           </div>
 
@@ -80,6 +102,8 @@
               <el-tree class="filter-tree"
                        :data="menuOperation.data"
                        :props="defaultProps"
+                       node-key="id"
+                       :highlight-current="true"
                        default-expand-all
                        :filter-node-method="findNode"
                        ref="menuOperationTree"
@@ -117,8 +141,10 @@
             },
 
             operation: {    // 操作数据处理
-              disabled: false,
-              data: null
+              disabled: true,
+              data: null,
+              pageData:[],   //页面操作按钮
+              tableData:[]   //表格操作按钮
             },
 
             menuOperation: {  // 菜单操作数据处理
@@ -143,11 +169,20 @@
          * @Method add
          */
         initMenuInfo(){
+          this.operation.pageData=[];
+          this.operation.tableData=[];
           this.$get("/api/operation/all", {}).then(response => {
             for(let data of response.data) {
               data.checked = false;
             }
-            this.operation.data = response.data;
+            //this.operation.data = response.data;
+            for(let v of response.data) {
+                if(v.type==='view') {
+                  this.operation.pageData.push(v)
+                } else if(v.type=='table') {
+                  this.operation.tableData.push(v)
+                }
+            }
           }).catch(function (error) {
           });
         },
@@ -186,7 +221,40 @@
           if (!value) return true;
           return data.label.indexOf(value) !== -1;
         },
+        /**
+         *根据指定菜单id查询操作
+         *
+         **/
+        findOperationById(data,id){
+          for(let v of data) {
+            if(v.id===id) {
+              if(v.children) {
+                for(let a of v.children) {
+                  if(a.id.indexOf('button')===-1) break;
+                  if(a.type==='view') {
+                    for(let m of this.operation.pageData) {
+                      if(m.id===a.buttonId) {
+                        m.checked=true;
+                      }
+                    }
+                  }
+                  else if(a.type==='table') {
+                    for(let m of this.operation.tableData) {
+                      if(m.id===a.buttonId) {
+                        m.checked=true;
+                      }
+                    }
+                  }
 
+                }
+              }
+            } else {
+              if(v.children&&v.children.length>0) {
+                this.findOperationById(v.children,id)  //递归匹配对应的id
+              }
+            }
+          }
+        },
 
         /**
          * 菜单树操作
@@ -202,10 +270,16 @@
             this.operation.disabled = false;
           }
           this.menu.selectMenu = node;
+          for(let v of this.operation.pageData) {
+            v.checked=false;
+          }
+          for(let v of this.operation.tableData) {
+            v.checked=false;
+          }
+          this.findOperationById(this.menuOperation.data,this.menu.selectMenu.id)
         },
 
         changeOperation(checked) {
-
           // 判断是否有选中菜单
           if(this.menu.selectMenu === null){
             this.$message({message: '请选中菜单在进行配置操作' ,center: true ,type: 'info'});
@@ -214,13 +288,15 @@
           // 获取选中菜单信息
           let checkMenuId = this.menu.selectMenu.id;
           // 如果没有选中操作按钮，则进行增加，反之删除
-          if(checked.checked === false){
+          if(checked.checked){
             // 建立菜单与操作之间的父子关系
             this.menuOperation.dataTemp.push({
               id: 'button-' + checkMenuId + '-' + checked.id,
               label: checked.operationName,
               parentId: checkMenuId,
-              checked: true
+              checked: true,
+              type:checked.type,
+              buttonId:checked.id
             });
           }else {
             for(let i = 0; i<this.menuOperation.dataTemp.length; i++){
@@ -236,16 +312,32 @@
           this.menuOperation.data = tree;
 
           // 更改选中操作的是否选中状态
-          for(let ch of this.operation.data) {
+         /* for(let ch of this.operation.pageData) {
             if(ch.id === checked.id){
               ch.checked = !ch.checked;
             }
           }
+          for(let ch of this.operation.tableData) {
+            if(ch.id === checked.id){
+              ch.checked = !ch.checked;
+            }
+          }*/
+        },
 
+        /**
+        * 保存对应菜单的操作
+         * @param treeData   右侧树形结构
+        * */
+        saveOperation(){
+          this.$post('/api/operation/save',{operation:this.menuOperation.data})
+            .then(response=>{
+              if(response.code===200) {
+                this.$message.success('保存成功');
+              } else {
+                this.$message.error('保存失败');
+              }
+            })
         }
-
-
-
 
       },
       watch: {
