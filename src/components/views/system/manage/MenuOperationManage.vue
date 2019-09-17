@@ -76,8 +76,8 @@
                 >{{operate.operationName}}</el-checkbox>
               </div>
               <div class="allOperation" style="margin-top: 50px">
-                <el-button type="primary" @click="saveOperation">确定</el-button>
-                <el-button>重置</el-button>
+                <el-button  :disabled="operation.disabled" type="primary" @click="saveOperation">确定</el-button>
+                <el-button  :disabled="operation.disabled">重置</el-button>
               </div>
             </div>
           </div>
