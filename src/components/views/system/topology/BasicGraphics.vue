@@ -96,6 +96,7 @@ export default {
         stroke: '#6d73ff',
         fill: '#989bff',
         text: "Rect",
+        textFill:"red"
       },
     });
     gd.add(rect);

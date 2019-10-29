@@ -16,6 +16,7 @@
     "element-ui": "^2.5.0",
     "font-awesome": "^4.7.0",
     "qs": "^6.6.0",
+    "vcolorpicker": "^0.1.8",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

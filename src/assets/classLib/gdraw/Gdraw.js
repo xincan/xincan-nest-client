@@ -438,4 +438,5 @@ export default class {
 	static Arrow = myLib.Arrow
 	static Link = myLib.Link
 	static Editor=myLib.Editor
+	static ShowEditor=myLib.ShowEditor
 }

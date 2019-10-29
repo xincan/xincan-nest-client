@@ -51,3 +51,4 @@ export {parseSVG};
 export {default as Arrow} from './renderer/graphic/shape/Arrow';
 export {default as Link} from './extend/ability/Link';
 export {default as Editor} from './extend/ability/Editor';
+export {default as ShowEditor} from './extend/ability/ShowEditor';
