@@ -7,6 +7,7 @@
 <script>
   import Gdraw from '../../../../assets/classLib/gdraw/Gdraw'
   import commonUtil from '../../../../assets/js/common'
+  import Random from '../../../../assets/classLib/utilLib/Random'
 
   export default {
     data() {
@@ -124,7 +125,10 @@
 
       let currentX = 20;
       let currentY = 30;
+      let upAreaId = "";  //上区域id
+      let downAreaId = ""; //下区域id
       for (let row of rows) {
+        // 添加标题
         this.editor.add(new Gdraw.Rect({
           draggable:false,
           shape: {
@@ -142,6 +146,8 @@
           },
         }));
         currentY = currentY + 80;
+        //获取获取下边距id
+        downAreaId = Random.getUUID();
         for (let i = 0; i < row.data.length; i++) {
           if (i != 0) {
             currentX = currentX + Gdraw.util.getContext().measureText(row.data[i].name).width + 40;
@@ -154,6 +160,9 @@
           let el = new Gdraw.Rect({
             id:row.data[i].id,
             draggable:true,
+            isShowLinkElement:true, //是否是点击显示连接路径的元素
+            isAreaElement:true, //是否是限制区域的元素
+            areaIdList:[upAreaId,downAreaId], //限制区域的id
             shape: {
               x: currentX,
               y: currentY,
@@ -164,7 +173,7 @@
               stroke: '#6d73ff',
               fill: '#989bff',
               text: row.data[i].name,
-              textFill:"red"
+              textFill:"red",
             },
           })
           this.editor.add(el);
@@ -172,7 +181,8 @@
         }
 
         this.editor.add(new Gdraw.Line({
-          draggable:true,
+          id:downAreaId,
+          draggable:false,
           shape: {
             x1: 0,
             y1: currentY+80,
@@ -181,6 +191,7 @@
           }
         }))
 
+        upAreaId = downAreaId; //交换位置
         currentX = 20;
         currentY = currentY+100
       }
@@ -216,7 +227,7 @@
         for(let v1 of nodeList){
           for(let v2 of nodeList){
             if(v.fromId==v1.id&&v.toId==v2.id){
-              console.log("-----------------dddd");
+              console.log("----------开始连线----------");
               let link= new Gdraw.Link({
                 from:v1,
                 to:v2,

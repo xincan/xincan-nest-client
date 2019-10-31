@@ -30,18 +30,45 @@ Draggable.prototype = {
     },
 
     _drag: function (e) {
+
         var draggingTarget = this._draggingTarget;
         if (draggingTarget) {
-
+            //获取鼠标当前的位置
             var x = e.offsetX;
             var y = e.offsetY;
 
             var dx = x - this._x;
             var dy = y - this._y;
+
             this._x = x;
             this._y = y;
 
-            draggingTarget.drift(dx, dy, e);
+            // 如果是区域元素，判断区域元素的拖拽范围
+            if (draggingTarget.isAreaElement) {
+              let box = draggingTarget.getBoundingRect();
+              let position = draggingTarget.position;
+              // 获取移动后的元素的坐标
+              let moveX = box.x + position[0];
+              let moveY = box.y + position[1];
+              if (draggingTarget.areaY[1] - box.height - moveY <= 0) {
+                position[1] = position[1] - 1;
+                draggingTarget.attr({
+                  position:position
+                });
+              }
+              if (draggingTarget.areaY[0] >= moveY) {
+                position[1] = position[1] + 1;
+                draggingTarget.attr({
+                  position:position
+                });
+              }
+              if (draggingTarget.areaY[0] < moveY && draggingTarget.areaY[1] > 0 && draggingTarget.areaY[1] - box.height - moveY > 0) {
+                draggingTarget.drift(dx, dy, e);
+              }
+            } else {
+              draggingTarget.drift(dx, dy, e);
+            }
+
             this.dispatchToElement(param(draggingTarget, e), 'drag', e.event);
 
             var dropTarget = this.findHover(x, y, draggingTarget).target;

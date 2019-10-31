@@ -105,11 +105,11 @@ export default {
       style:{
         x: 50,
         y: 200,
-        width: 300,
-        height: 200,
+        width: 150,
+        height: 100,
         //image:'https://img.zcool.cn/community/01205956a1ca9b6ac7256cb04025c6.png@2o.png',
         //image:this.$refs.image,
-        image:'/static/table-0.jpg',
+        image:'/static/resources/type_1.jpg',
         text:"Image"
       }
     });

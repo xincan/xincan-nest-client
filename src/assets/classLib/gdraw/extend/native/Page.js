@@ -80,6 +80,19 @@ export default class extends  Group{
 			scale:nowScale,
 			position:[positionX,positionY]
 		})
+
+    //添加对文字的缩放效果
+		let pageChildren = this._children[0]._children; //获取页面上的元素
+    for (let element of pageChildren) {
+      let style = element.style;
+      if (!style.originFontSize) { //保存元素原有的fontSize
+        style.originFontSize = style.fontSize;
+      }
+      style.fontSize = style.originFontSize * nowScale[0];
+      element.attr({
+        style:style
+      });
+    }
 	}
 	/**
 	 * @method 重写父级方法，page更新会引起元素来更新相关连线，无需自己更新

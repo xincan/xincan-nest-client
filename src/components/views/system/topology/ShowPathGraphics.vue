@@ -28,9 +28,7 @@
 
       console.log("数据：",data);
       var content = document.getElementById('canvasDiv');
-      // alert(content);
       console.log(content.offsetWidth,"----offsetWidth");
-      //alert(content.cWidth);
       console.log(content.offsetHeight,"------offsetHeight");
       console.log("文字宽度：",Gdraw.util.getContext().measureText("大家好大家好大家好").width,Gdraw.util.getContext().canvas.height);
 
@@ -56,6 +54,7 @@
           el = new Gdraw.Image({
             id:v.id,
             draggable:v.draggable,
+            isShowLinkElement:true, //是否是点击显示连接路径的元素
             position:v.position,
             style:{
               x: v.style.x,
