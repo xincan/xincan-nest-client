@@ -184,4 +184,25 @@ export default class extends Group{
     }
     return selectedNode;
   }
+
+  /**
+   * @method 返回编辑器里的所有可编辑元素
+   * @author DingJianFei
+   * @date 2019/6/10
+   */
+  getEditedElment(){
+    var list=[];
+    var f=function (children) {
+      for(let v of children){
+        if(v.isEditable&&!v.unEdit){
+          list.push(v)
+        }
+        if(v.isGroup){
+          f(v.children());
+        }
+      }
+    }
+    f(this.children());
+    return list;
+  }
 }

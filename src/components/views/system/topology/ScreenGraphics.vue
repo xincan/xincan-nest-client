@@ -227,7 +227,6 @@
         for(let v1 of nodeList){
           for(let v2 of nodeList){
             if(v.fromId==v1.id&&v.toId==v2.id){
-              console.log("----------开始连线----------");
               let link= new Gdraw.Link({
                 from:v1,
                 to:v2,
@@ -244,6 +243,9 @@
           }
         }
       }
+
+      //获取页面元素用于后台保存
+      console.log("-----页面元素-----",this.editor.getEditedElment())
 
     },
     destroyed: function () {
