@@ -94,7 +94,6 @@
           let routers = [];
           if(response.data && response.data.length > 0){
             this.menus = this.menus.concat(response.data);
-            console.log(this.menus);
             for(let menu of response.data) {
               routers.push({
                 path: '/' + menu.code,
@@ -115,7 +114,6 @@
               }
             }
           }
-          console.log(routers);
           this.$router.addRoutes(routers);
         }).catch( error => {console.log(error);});
       },
