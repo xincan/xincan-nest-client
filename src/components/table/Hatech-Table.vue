@@ -223,8 +223,6 @@
        */
       ,_sortChange(column){
 
-        console.log(column)
-
         // column.order == ascending 表示升序，descending 表示降序，否则为空
         this.table.sort.sortName = column.prop;
         this.table.sort.sortType = "descending" === column.order ? "DESC":"ASC";
@@ -236,10 +234,10 @@
 
           // 如果表格设置了table.clientPage=true，则表示前端排序，否则后台排序
           if(this.table.clientPage && this.table.sort.sortType === "DESC"){
-            if(column.type === "date"){
+            if(column.column.type === "date"){
               this.table.data = list.sort((a, b) => {
                 let aTime = new Date(a[column.prop]), bTime = new Date(b[column.prop]);
-                return bTime+"".charCodeAt(0) - aTime+"".charCodeAt(0) ;
+                return bTime - aTime;
               });
             }else {
               this.table.data = list.sort((a, b) => (b[column.prop]+"").charCodeAt(0) - (a[column.prop]+"").charCodeAt(0));
@@ -248,10 +246,10 @@
 
           // 正序排序
           if(this.table.clientPage && this.table.sort.sortType === "ASC") {
-            if (column.type === "date") {
+            if (column.column.type === "date") {
               this.table.data = list.sort((a, b) => {
                 let aTime = new Date(a[column.prop]), bTime = new Date(b[column.prop]);
-                return aTime.charCodeAt(0) - bTime.charCodeAt(0);
+                return aTime - bTime;
               });
             } else {
               this.table.data = list.sort((a, b) => (a[column.prop] + "").charCodeAt(0) - (b[column.prop] + "").charCodeAt(0));

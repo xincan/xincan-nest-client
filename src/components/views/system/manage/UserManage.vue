@@ -27,12 +27,12 @@
       -->
       <div slot="hatech-search" class="hatech-search">
         <el-form :inline="true" :model="table.search" class="demo-form-inline">
-          <el-form-item><el-input v-model="table.search.operationName" placeholder="请输入操作名称"></el-input></el-form-item>
+          <el-form-item><el-input v-model="table.search.name" placeholder="请输入用户名称"></el-input></el-form-item>
           <el-form-item>
-            <el-select v-model="table.search.type" placeholder="请选择操作类型">
-              <el-option label="请选择操作类型" value=""></el-option>
-              <el-option label="视图操作" value="view"></el-option>
-              <el-option label="表格操作" value="table"></el-option>
+            <el-select v-model="table.search.sex" placeholder="请选择性别">
+              <el-option label="请选择性别" value=""></el-option>
+              <el-option label="男" value="1"></el-option>
+              <el-option label="女" value="0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
