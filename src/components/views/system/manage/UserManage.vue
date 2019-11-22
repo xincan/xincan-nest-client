@@ -125,9 +125,11 @@
         // 表格信息设置
         table:{
           title:'用户信息'                         // 表格名称
-          ,id:'admin-user-table'        // 表格ID，系统中表格唯一
+          ,id:'admin-user-table'                  // 表格ID，系统中表格唯一
           ,autoInit: true                         // 自动加载：true,手动加载false
-          ,url:'/api/user'                        // 数据访问路径
+          ,clientPage: true                      // 是否前端分页，false：前端不分页，true：前端分页
+          // ,url:'/api/user'                        // 数据访问路径
+          ,url:'/api/user/all'                        // 数据访问路径
           ,tableWidth:'100%'                      // 表格宽度设定
           ,showCellUrl:'/api/table/find'          // 显隐列读取用户习惯
           ,dropCellUrl:'/api/table/save'          // 拖拽列保存入库路径，记录用户习惯
@@ -146,11 +148,11 @@
           ,search:{                                // 查询条件
           }
           ,column: [                               // 表格头部信息、列的显隐设置
-            {label:'用户名',  prop: 'name',   width:'auto', isHide: true}
-            ,{label:'性别',  prop: 'sex',            width:'auto', isHide: true}
-            ,{label:'手机号码',  prop: 'phone',            width:'auto', isHide: true}
-            ,{label:'邮箱',  prop: 'email',            width:'auto', isHide: true}
-            ,{label:'创建时间',  prop: 'createTime',      width:'auto', isHide: true}
+            {label:'用户名',     prop: 'name',         type: 'string',  width:'auto', isHide: true}
+            ,{label:'性别',       prop: 'sex',        type: 'number',           width:'auto', isHide: true}
+            ,{label:'手机号码',  prop: 'phone',       type: 'string',           width:'auto', isHide: true}
+            ,{label:'邮箱',  prop: 'email',           type: 'string',       width:'auto', isHide: true}
+            ,{label:'创建时间',  prop: 'createTime',  type: 'date',    width:'auto', isHide: true}
           ]
           ,showHeaderOption: true                 // 是否显示头部右侧操作按钮
           ,headerOption:[                         // 表格头部操作按钮集合

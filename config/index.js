@@ -24,14 +24,7 @@ module.exports = {
           pathRewrite: {
             '^/': ''
           }
-      },
-      // '/': {
-      //   target: 'http://127.0.0.1:8040',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/': ''
-      //   }
-      // }
+      }
     },
 
     // Various Dev Server settings

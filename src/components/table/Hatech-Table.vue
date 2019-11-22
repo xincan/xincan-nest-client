@@ -36,14 +36,14 @@
           </ul>
         </div>
       </div>
-      <!-- 表格主体布局 -->
+      <!-- 表格主体布局 table.clientPage 是否为true，如果是则一次性读取数据，前端分页，否则后台分页 -->
       <div class="hatech-table-body">
         <el-table
           stripe
           border
           resizable
           size="small"
-          :data="table.data"
+          :data="table.clientPage ? table.data.slice((table.page - 1) * table.size, table.page * table.size) : table.data"
           :ref="table.id"
           :style="'width: ' + table.tableWidth"
           @sort-change="_sortChange"
@@ -68,6 +68,7 @@
             :prop = "column.prop"
             :label = "column.label"
             :width = "column.width"
+            :type = "column.type"
           >
 
             <template slot-scope="scope" >
@@ -221,10 +222,43 @@
        * @Method _sortChange
        */
       ,_sortChange(column){
+
+        console.log(column)
+
+        // column.order == ascending 表示升序，descending 表示降序，否则为空
+        this.table.sort.sortName = column.prop;
+        this.table.sort.sortType = "descending" === column.order ? "DESC":"ASC";
+
+        // 倒序排序
         if(column !== null && this.table.sort.custom){
-          // column.order == ascending 表示升序，descending 表示降序，否则为空
-          this.table.sort.sortName = column.prop;
-          this.table.sort.sortType = "descending" === column.order ? "DESC":"ASC";
+
+          let list = JSON.parse(JSON.stringify(this.table.data));
+
+          // 如果表格设置了table.clientPage=true，则表示前端排序，否则后台排序
+          if(this.table.clientPage && this.table.sort.sortType === "DESC"){
+            if(column.type === "date"){
+              this.table.data = list.sort((a, b) => {
+                let aTime = new Date(a[column.prop]), bTime = new Date(b[column.prop]);
+                return bTime+"".charCodeAt(0) - aTime+"".charCodeAt(0) ;
+              });
+            }else {
+              this.table.data = list.sort((a, b) => (b[column.prop]+"").charCodeAt(0) - (a[column.prop]+"").charCodeAt(0));
+            }
+          }
+
+          // 正序排序
+          if(this.table.clientPage && this.table.sort.sortType === "ASC") {
+            if (column.type === "date") {
+              this.table.data = list.sort((a, b) => {
+                let aTime = new Date(a[column.prop]), bTime = new Date(b[column.prop]);
+                return aTime.charCodeAt(0) - bTime.charCodeAt(0);
+              });
+            } else {
+              this.table.data = list.sort((a, b) => (a[column.prop] + "").charCodeAt(0) - (b[column.prop] + "").charCodeAt(0));
+            }
+          }
+
+        } else {
           this._initTable();
         }
       }
@@ -302,7 +336,14 @@
         this._search();
         let that = this;
         this.$get(this.table.url, this.table.search).then( response => {
-          that.table.count = response.count;
+
+          // 是否前端分页，false：前端不分页，true：前端分页
+          if(this.table.clientPage){
+            that.table.count = response.data.length;
+          }else {
+            that.table.count = response.data.count;
+          }
+
           that.table.data = response.data;
         }).catch( error => {console.log(error);});
       }
@@ -314,7 +355,10 @@
        */
       ,_tableSizeChange(size) {
         this.table.size = size;
-        this._initTable();
+        // 是否前端分页，false：前端不分页，true：前端分页
+        if(this.table.clientPage === false) {
+          this._initTable();
+        }
       }
 
       /**
@@ -325,7 +369,10 @@
        */
       ,_tableCurrentChange(page) {
         this.table.page = page;
-        this._initTable();
+        // 是否前端分页，false：前端不分页，true：前端分页
+        if(this.table.clientPage === false) {
+          this._initTable();
+        }
       }
 
       /**
