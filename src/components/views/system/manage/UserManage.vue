@@ -27,6 +27,7 @@
       -->
       <div slot="hatech-search" class="hatech-search">
         <el-form :inline="true" :model="table.search" class="demo-form-inline">
+          <el-form-item><el-input v-model="table.search.loginName" placeholder="请输入登录名称"></el-input></el-form-item>
           <el-form-item><el-input v-model="table.search.name" placeholder="请输入用户名称"></el-input></el-form-item>
           <el-form-item>
             <el-select v-model="table.search.sex" placeholder="请选择性别">
@@ -148,11 +149,22 @@
           ,search:{                                // 查询条件
           }
           ,column: [                               // 表格头部信息、列的显隐设置
-            {label:'用户名',     prop: 'name',         type: 'string',  width:'auto', isHide: true}
-            ,{label:'性别',       prop: 'sex',        type: 'number',           width:'auto', isHide: true}
-            ,{label:'手机号码',  prop: 'phone',       type: 'string',           width:'auto', isHide: true}
-            ,{label:'邮箱',  prop: 'email',           type: 'string',       width:'auto', isHide: true}
-            ,{label:'创建时间',  prop: 'createTime',  type: 'date',    width:'auto', isHide: true}
+            {label:'用户名',       prop: 'name',         type: 'string',         width:'auto', isHide: true}
+            ,{label:'登录名',      prop: 'loginName',    type: 'string',         width:'auto', isHide: true}
+            ,{label:'性别',        prop: 'sex',          type: 'number',         width:'auto', isHide: true, formatter: {
+                1: '<i class="fa fa-male"></i>',
+                0: '<i class="fa fa-female"></i>'
+              }
+            }
+
+            ,{label:'手机号码',     prop: 'phone',       type: 'string',          width:'auto', isHide: true}
+            ,{label:'邮箱',         prop: 'email',       type: 'string',         width:'auto', isHide: true}
+            ,{label:'是否管理员',    prop: 'isAdmin',     type: 'number',         width:'auto', isHide: true, formatter: {
+                1: '<span class="hatech-fmt-enable hatech-success">ON</span>',
+                0: '<span class="hatech-fmt-disable hatech-danger">OFF</span>'
+              }
+            }
+            ,{label:'创建时间',     prop: 'createTime',  type: 'date',            width:'auto', isHide: true}
           ]
           ,showHeaderOption: true                 // 是否显示头部右侧操作按钮
           ,headerOption:[                         // 表格头部操作按钮集合

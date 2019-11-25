@@ -290,7 +290,6 @@
           }
           cellString.push({'prop': cell.prop, 'width': cell.width , 'isHide': cell.isHide});
         });
-        console.log(this.table.dropCellUrl);
         // 将操作列数据保存到后台
         this.$put(this.table.dropCellUrl, {
             name:this.table.id, content: cellString
